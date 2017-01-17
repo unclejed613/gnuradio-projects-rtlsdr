@@ -1,4 +1,6 @@
 commrx is a communications receiver using rtl-sdr
+needed: gnuradio, rtl-sdr dongle
+optional: nooelec ham-it-up hf converter
 controls:
   100s tuning steps of 100Mhz
   10s  tuning steps of 10Mhz
