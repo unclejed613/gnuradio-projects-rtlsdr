@@ -5,7 +5,7 @@
 # Title: COMMUNICATIONS-RECEIVER
 # Author: JED MARTIN
 # Description: AM-FM-SSB RECEIVER FOR RTL-SDR
-# Generated: Sat Jan 21 13:56:08 2017
+# Generated: Sat Jan 21 14:16:13 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -130,6 +130,41 @@ class commrx(gr.top_block, Qt.QWidget):
         self.rtlsdr_source_0.set_antenna("", 0)
         self.rtlsdr_source_0.set_bandwidth(samp_rate, 0)
           
+        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
+        	1024, #size
+        	firdes.WIN_BLACKMAN_hARRIS, #wintype
+        	freq+100000, #fc
+        	1000000, #bw
+        	"", #name
+                1 #number of inputs
+        )
+        self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_0.enable_grid(True)
+        
+        if not True:
+          self.qtgui_waterfall_sink_x_0.disable_legend()
+        
+        if "complex" == "float" or "complex" == "msg_float":
+          self.qtgui_waterfall_sink_x_0.set_plot_pos_half(not True)
+        
+        labels = ["", "", "", "", "",
+                  "", "", "", "", ""]
+        colors = [6, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+        for i in xrange(1):
+            if len(labels[i]) == 0:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
+            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
+        
+        self.qtgui_waterfall_sink_x_0.set_intensity_range(-90, -30)
+        
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 5,0,1,2)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -270,6 +305,7 @@ class commrx(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_complex_to_real_0_0, 0), (self.analog_agc_xx_0_1, 0))    
         self.connect((self.blocks_multiply_xx_0, 0), (self.msel1, 0))    
         self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_freq_sink_x_0, 0))    
+        self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_waterfall_sink_x_0, 0))    
         self.connect((self.dc_blocker_xx_0, 0), (self.analog_agc_xx_0, 0))    
         self.connect((self.low_pass_filter_0, 0), (self.analog_simple_squelch_cc_1, 0))    
         self.connect((self.low_pass_filter_0_0, 0), (self.analog_simple_squelch_cc_0, 0))    
@@ -384,6 +420,7 @@ class commrx(gr.top_block, Qt.QWidget):
         self.freq = freq
         self.rtlsdr_source_0.set_center_freq(self.freq, 0)
         self.qtgui_freq_sink_x_0.set_frequency_range(self.freq+100000, 1000000)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq+100000, 1000000)
 
     def get_corr(self):
         return self.corr
