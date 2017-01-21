@@ -5,7 +5,7 @@
 # Title: COMMUNICATIONS-RECEIVER
 # Author: JED MARTIN
 # Description: AM-FM-SSB RECEIVER FOR RTL-SDR
-# Generated: Mon Jan 16 22:13:52 2017
+# Generated: Sat Jan 21 13:56:08 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -133,7 +133,7 @@ class commrx(gr.top_block, Qt.QWidget):
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	(freq+100000), #fc
+        	freq+100000, #fc
         	1000000, #bw
         	"RF", #name
         	1 #number of inputs
@@ -269,6 +269,7 @@ class commrx(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_complex_to_real_0, 0), (self.analog_agc_xx_0_0, 0))    
         self.connect((self.blocks_complex_to_real_0_0, 0), (self.analog_agc_xx_0_1, 0))    
         self.connect((self.blocks_multiply_xx_0, 0), (self.msel1, 0))    
+        self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_freq_sink_x_0, 0))    
         self.connect((self.dc_blocker_xx_0, 0), (self.analog_agc_xx_0, 0))    
         self.connect((self.low_pass_filter_0, 0), (self.analog_simple_squelch_cc_1, 0))    
         self.connect((self.low_pass_filter_0_0, 0), (self.analog_simple_squelch_cc_0, 0))    
@@ -279,7 +280,6 @@ class commrx(gr.top_block, Qt.QWidget):
         self.connect((self.msel1, 0), (self.low_pass_filter_0_0, 0))    
         self.connect((self.msel1, 2), (self.low_pass_filter_0_1, 0))    
         self.connect((self.rtlsdr_source_0, 0), (self.blocks_multiply_xx_0, 0))    
-        self.connect((self.rtlsdr_source_0, 0), (self.qtgui_freq_sink_x_0, 0))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "commrx")
@@ -382,8 +382,8 @@ class commrx(gr.top_block, Qt.QWidget):
 
     def set_freq(self, freq):
         self.freq = freq
-        self.qtgui_freq_sink_x_0.set_frequency_range((self.freq+100000), 1000000)
         self.rtlsdr_source_0.set_center_freq(self.freq, 0)
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.freq+100000, 1000000)
 
     def get_corr(self):
         return self.corr
