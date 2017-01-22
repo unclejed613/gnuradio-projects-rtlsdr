@@ -7,11 +7,27 @@ controls:
   1s   tuning steps of 1Mhz
   fsel slider 000 to 999khz steps of 1khz
   AM,NFM,WFM,USB,LSB select receive mode
-  UPCONVERT  selects frequency readout for a 125Mhz upconverter for HF bands (only changes readout, does not change spectrum  analyzer readout yet)
+  UPCONVERT  selects frequency readout for a 125Mhz upconverter for HF bands (only changes readout, does not change spectrum  
+  analyzer readout yet)
   gain   rf gain 0-50db
   squelch    squelch works in all modes
-  spectrum analyzer controls change the behavior of the analyzer display.  if you get stuttering audio, setting the FFT to less than 1024 sometimes helps. setting the receive mode to AM, then selecting other modes helps too...
-  i might add a fine tuning control (100hz or 10hz steps) because the rtl dongle needs it, going to USB or LSB while tuned into an AM mode station will show you why ;)  i might add BB and IF gain controls as well. this is basically a first draft.  
+  spectrum analyzer controls change the behavior of the analyzer display.  if you get stuttering audio, setting the FFT to less
+  than 1024 sometimes helps. setting the receive mode to AM, then selecting other modes helps too...
+  ADDED: 
+      SCAN WIDTH control for the analyzer and waterfall. the scan width can be changed from the default 1Mhz, down to 10khz
+      in 10khz steps.
+      RIT for fine tuning (it shows 10hz steps, but apparently the RTL-SDR
+      only uses 100hz steps, but i'll leave it this way for other hardware).
+  FIXED: the spectrum analyzer and waterfall were offset by 100khz, and this has been fixed.
+  TESTING: osmocom source for the RTL-SDR instead of the plain RTL source.  experimented with using the IF gain setting, but this
+           only works on E4000 models i think.
+           TESTED the UPCONVERT function, and it works very well, but pay attention to the knob limits for the 1s (1Mhz steps)
+           and 10s (10Mhz steps). since the upconversion with the Ham-It-Up converter is 125Mhz, the steps on the 1s knob is 
+           shifted by 5.
+  TO DO: resolve some of the math issues with upconversion. see if the FREQUENCY display can be set to a larger font, maybe in color.
+         get the radio to maintain settings between uses (instead of defaulting to 155Mhz,NFM mode every time it's run).
+   
+  
   wish list: add police scanner type operation using a list of frequencies plus auto selecting the receive mode on each list line.
   (including adding P25 and amateur digital voice modes)
   more to follow...
