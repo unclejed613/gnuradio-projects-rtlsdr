@@ -1,1 +1,22 @@
+frqtest.py builds frequency list as 32-bit-little-endian float entries (4 bytes per entry).
+you can create a list of any size.  you can add frequencies (frqtest.py writes in append mode) to the file.  editing the file is in
+the works. so far what i have had to do is keep the original entries in a list, and if i find a frequency that needs to be removed,
+edit the file with a hex editor.
 
+scanner.py is experimental.  the hold-on-open-squelch is not perfect, and sometimes steps to the next frequncy if the audio float 
+value happens to be in the right range near 0 (even if it has been held for several seconds). the scan-hold button sometimes allows
+one more step before stopping if the radio is scanning.  
+
+the squelch needs to have more dwell time.  a trailing edge delay function for the stepper control here might be nice,but i don't 
+see any blocks that perform this function (a monostable flop is what comes to mind).  such a block would cure the false
+triggered resumed scan.
+
+the scan rate function does not seem to change the scan rate much. it would be nice if the scan rate could go from 1/2 hz to 
+100hz. right now seems to be around 1hz most of the time.
+
+sorry, only nfm for now.  if i get to the point where the scanner function could be a feature of the commrx receiver, i will
+add it, but scanner is "not yet ready for prime time"  (who knows, a buggy scanner might make for a great sketch on SNL? ... 
+...(scanner stops on police call, jumps back into scan mode just as the officer says what address he's pulling up to...))
+
+email me at unclejed613c (..at..) yahoo.com  if you have any suggestions or improvements (hold on to any added feature
+ideas for now, i already have a list as long as my arm).
