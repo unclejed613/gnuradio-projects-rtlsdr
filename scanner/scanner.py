@@ -5,7 +5,7 @@
 # Title: NFM SCANNER
 # Author: JED MARTIN
 # Description: NFM SCANNER EXPERIMENT
-# Generated: Mon Jan 30 22:29:57 2017
+# Generated: Tue Jan 31 21:07:35 2017
 ##################################################
 
 if __name__ == '__main__':
@@ -75,7 +75,7 @@ class scanner(gr.top_block, Qt.QWidget):
         self.sql = sql = -50
         self.samp_rate = samp_rate = 32000
         self.s_rate = s_rate = 2
-        self.r_rate = r_rate = 1200000
+        self.r_rate = r_rate = 240000
         self.hold_scan = hold_scan = 0
         self.gain = gain = 30
         self.frequency = frequency = freq_set/1000000
@@ -166,7 +166,7 @@ class scanner(gr.top_block, Qt.QWidget):
         
         
           
-        self.low_pass_filter_0 = filter.fir_filter_ccf(25, firdes.low_pass(
+        self.low_pass_filter_0 = filter.fir_filter_ccf(5, firdes.low_pass(
         	1, r_rate, 7500, 5000, firdes.WIN_HAMMING, 6.76))
         self._frequency_tool_bar = Qt.QToolBar(self)
         
@@ -192,18 +192,18 @@ class scanner(gr.top_block, Qt.QWidget):
         _freqd_thread.daemon = True
         _freqd_thread.start()
         self.freqa = blocks.file_source(gr.sizeof_float*1, "/home/jed/radio/PROJECTS/scanner/freqtest.dat", True)
-        self.dc_blocker_xx_1 = filter.dc_blocker_ff(32, True)
-        self.dc_blocker_xx_0 = filter.dc_blocker_ff(32, True)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
-        self.blocks_threshold_ff_0 = blocks.threshold_ff(0.0000001, .0001, 0)
+        self.blocks_threshold_ff_0 = blocks.threshold_ff(0.0000000001, .0001, 0)
+        self.blocks_multiply_xx_2 = blocks.multiply_vff(1)
         self.blocks_multiply_xx_1 = blocks.multiply_vff(1)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.blocks_delay_0 = blocks.delay(gr.sizeof_float*1, 10)
+        self.blocks_add_xx_0 = blocks.add_vff(1)
         self.audio_sink_0 = audio.sink(48000, "", True)
         self.analog_sig_source_x_0 = analog.sig_source_c(r_rate, analog.GR_COS_WAVE, -100000, 1, 0)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(sql, 1e-3, 5, False)
         self.analog_nbfm_rx_0 = analog.nbfm_rx(
         	audio_rate=48000,
-        	quad_rate=r_rate / 25,
+        	quad_rate=r_rate / 5,
         	tau=75e-6,
         	max_dev=5.0e3,
         )
@@ -211,19 +211,21 @@ class scanner(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_nbfm_rx_0, 0), (self.audio_sink_0, 0))    
-        self.connect((self.analog_nbfm_rx_0, 0), (self.dc_blocker_xx_0, 0))    
-        self.connect((self.analog_nbfm_rx_0, 0), (self.dc_blocker_xx_1, 0))    
+        self.connect((self.analog_nbfm_rx_0, 0), (self.blocks_delay_0, 0))    
+        self.connect((self.analog_nbfm_rx_0, 0), (self.blocks_multiply_xx_1, 0))    
+        self.connect((self.analog_nbfm_rx_0, 0), (self.blocks_multiply_xx_1, 1))    
         self.connect((self.analog_pwr_squelch_xx_0, 0), (self.analog_nbfm_rx_0, 0))    
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))    
+        self.connect((self.blocks_add_xx_0, 0), (self.blocks_threshold_ff_0, 0))    
+        self.connect((self.blocks_delay_0, 0), (self.audio_sink_0, 0))    
+        self.connect((self.blocks_delay_0, 0), (self.blocks_multiply_xx_2, 1))    
+        self.connect((self.blocks_delay_0, 0), (self.blocks_multiply_xx_2, 0))    
         self.connect((self.blocks_multiply_xx_0, 0), (self.low_pass_filter_0, 0))    
         self.connect((self.blocks_multiply_xx_0, 0), (self.qtgui_sink_x_0, 0))    
-        self.connect((self.blocks_multiply_xx_1, 0), (self.blocks_threshold_ff_0, 0))    
+        self.connect((self.blocks_multiply_xx_1, 0), (self.blocks_add_xx_0, 0))    
+        self.connect((self.blocks_multiply_xx_2, 0), (self.blocks_add_xx_0, 1))    
         self.connect((self.blocks_threshold_ff_0, 0), (self.stop_scan, 0))    
-        self.connect((self.blocks_throttle_0, 0), (self.valve, 0))    
-        self.connect((self.dc_blocker_xx_0, 0), (self.blocks_multiply_xx_1, 0))    
-        self.connect((self.dc_blocker_xx_1, 0), (self.blocks_multiply_xx_1, 1))    
-        self.connect((self.freqa, 0), (self.blocks_throttle_0, 0))    
+        self.connect((self.freqa, 0), (self.valve, 0))    
         self.connect((self.low_pass_filter_0, 0), (self.analog_pwr_squelch_xx_0, 0))    
         self.connect((self.rtlsdr_source_0, 0), (self.blocks_multiply_xx_0, 0))    
         self.connect((self.valve, 0), (self.freqb, 0))    
@@ -286,7 +288,6 @@ class scanner(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
     def get_s_rate(self):
         return self.s_rate

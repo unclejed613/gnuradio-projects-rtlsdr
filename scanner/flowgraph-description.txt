@@ -1,0 +1,21 @@
+********SCANNER-RTL***********
+
+FLOWGRAPH DESCRIPTION
+
+1. READ FREQUENCIES FROM FILE AND SET AS A VARIABLE
+   This section begins with the File Source block which reads 32-bit values from the file.  The repeat function is turned on.  
+   The next block is the Valve, and controls the flow of frequency data. It's control signal comes from the scan/stop logic (described below).  When the valve is open, frequency data flows and the radio scans, and the scan stops when the valve closes.
+   The next block is Probe Signal. This picks up the frequency data and passes it to the Function Probe block which turns the frequency data into a variable.  This is then passed to the Variable block freq_set (a place holder for a later selector switch), which is the variable used to tune the RTL-SDR Source.
+    The Function Probe block is also supposed to control the scan rate (the poll rate is controlled by the QT GUI Chooser), but so far, i have only seen about a 1hz scan rate no matter how this is set.
+
+2. STOP THE SCAN WHEN THE SQUELCH BREAKS, AND RESUME WHEN THE SQUELCH DROPS
+   Audio is tapped off from the output of NBFM Receive, and is fed into the input of one of the multipliers, on both inputs. This squares the signals, but more importantly insures there are no negative values.  The other multiplier is fed in the same way from the output of a delay, and the outputs of both multipliers are fed into an adder.  This insures (within reason) that the Threshold block never gets a zero while the squelch is open.  The Power Squelch is set to Gate: No, which causes the squelch block to output streams of zeroes when the squelch is closed.  The Threshold block triggers a "1" state if the input goes over 1uV, and resets to 0 below 100pV, which is then fed to a Probe Signal block. The signal is turned into the stop_scan signal by the Function Probe block. The stop_scan signal is one of two signals "or-ed" by the Valve block.  The other signal controlling the Valve block is the checkbox hold_scan which can override the stop_scan signal manually.
+
+3. THE RECEIVER
+   The receiver portion is a standard NFM receiver set of blocks.  The RTL-SDR Source is set to a sample rate of 240kHz since a huge bandwidth is unneccessary, and eats up processing time (and causes lots of buffer errors ). One of the goals of this project is to have a radio with scanner functionality that will run on a Raspberry-Pi 3, so any unneccessary bandwidth trimmed off will aid in that goal. I could try lower rates, but chopping from 1.2Mhz to 240khz required minimal changes in the receiver blocks.
+
+4.WORK IN PROGRESS
+a) experimenting with the squelch parameters to get better squelch and scan-stop action. Sometimes the squelch chatters and the radio keeps scanning past valid signals.
+b) adding more demodulators.  this will require using a different file structure, because some frequencies will need to automatically switch to AM (air band transmissions are AM), or other modes. all amateur frequencies use NFM, USB or D-STAR.
+c) adding some "presets" so you don't have to step-stop to find a particular channel you want to monitor in hold mode.
+  a and c are the ones i'm working on first.
