@@ -1,0 +1,9 @@
+frqlist.py is a simple frequency list creator. frqedit.py is a rudimentary editor of the frequency list created by frqlist.py.
+it can modify entries in the list, and append entries to the list. frqlist is good for adding many entries at once, 
+since it opens the file in append mode, and you just need to tell it how many entries are being added.
+frqedit can modify existing entries, and can also append (but it asks you after each entry if you want to add another one).
+frqedit opens the file in write mode, so it overwrites the original file. i will likely add a backup function to it.
+
+all entries are in Hz, so 155.125Mhz is 155125000.  the 32bit values occasionally end up with the entry off a few Hz (such
+as an entry for 145145000 becoming 145144992.0) but for 99.99% of the uses of the scanner, it shouldn't matter (the local
+oscillator resolution of a typical rtl dongle is 10hz).
