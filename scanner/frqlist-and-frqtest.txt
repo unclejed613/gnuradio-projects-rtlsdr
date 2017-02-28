@@ -4,6 +4,8 @@ since it opens the file in append mode, and you just need to tell it how many en
 frqedit can modify existing entries, and can also append (but it asks you after each entry if you want to add another one).
 frqedit opens the file in write mode, so it overwrites the original file. i will likely add a backup function to it.
 
+frqlist.py is freqtest.py renamed, and no other changes.
+
 all entries are in Hz, so 155.125Mhz is 155125000.  the 32bit values occasionally end up with the entry off a few Hz (such
 as an entry for 145145000 becoming 145144992.0) but for 99.99% of the uses of the scanner, it shouldn't matter (the local
 oscillator resolution of a typical rtl dongle is 10hz).
