@@ -1,3 +1,5 @@
+# this script uses python 3 and tkinter
+there is a python 2.7 version, using Tkinter at https://github.com/OromisGlaedr/Frequency-Editor-With-GUI/blob/master/tkmenu.py
 from tkinter import *
 from tkinter import simpledialog
 import os
