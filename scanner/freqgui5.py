@@ -1,5 +1,3 @@
-# this script uses python 3 and tkinter
-#there is a python 2.7 version, using Tkinter at https://github.com/OromisGlaedr/Frequency-Editor-With-GUI/blob/master/tkmenu.py
 from tkinter import *
 from tkinter import simpledialog
 import os
@@ -23,7 +21,9 @@ def FreqHelp():
         Delete, deletes an entry
         Change, changes an entry
         Add, appends an entry
-        There are 3 file functions:
+        There are 4 file functions:
+        New, creates a new file. if no file exists,
+        do a "touch freqtest.dat" first.
         Open, opens the file
         Save, saves the current array
         Show refreshes the list on screen. ''')
@@ -101,10 +101,30 @@ def DisplayFreqs():
 #        Entry(text = freq_array[index], bg = 'grey', relief = SUNKEN, width = 20).grid(row = index,  column = 2)
  #       freq_array[]
 
+def MakeNewFile():
+    freq_array = array('f', []) 
+#    entries=input("How Many Entries?  ")
+    entries = simpledialog.askinteger('entries', 'How many entries?',  parent = root)
+#x<11
+#print ("Enter frequencies in Hz, with no decimal points")
+#fout = open("freq.dat", "a")
+#while True:
+    for i in range(0,entries):
+#        print i
+#      freq=input("Frequency ")
+        freq = simpledialog.askfloat('entry', 'enter frequency ' + str(i+1), parent = root)  
+        freq_array=array("f",[freq])
+#fout.write(freq)
+ #         frq=float(freq)  
+        with open("freqtest.dat", "ab") as x:
+#                 pickle.dump(frq, x)p
+            freq_array.tofile(x) 
+    x.close()    
 
 root = Tk()
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="New", command=MakeNewFile)
 filemenu.add_command(label="Open", command=FreqArrayInit)
 filemenu.add_command(label="Save", command=DumpFreqs)
 filemenu.add_command(label="Show", command=DisplayFreqs)
