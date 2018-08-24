@@ -18,3 +18,9 @@ this flowgraph is not meant to be used for secure communications, because the me
 broken.  it is, however an interesting piece of technology, and was used in the past for a reasonably secure method
 of scrambling audio (as long as it wasn't used over an SSB radio).  the advent of monolithic 4-quadrant multiplier ICs made 
 decoding scrambled audio simple and easy, and this scrambler was rapidly made obsolete.
+
+
+when testing this flowgraph, remember to change to file paths to something sane (they are currently set to /home/user/)
+and substitute a wav file with speech in it for the original source audio (currently set to scramtest2b.wav, which is not 
+included with the flowgraph and python script).  make sure to enable and disable the proper wav file sources and sinks
+when testing the flowgraph (hopefully the filenames are descriptive enough).
